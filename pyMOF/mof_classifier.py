@@ -18,4 +18,4 @@ class MOFClassifier(object):
         self.cif = cif
         self.net = net
 
-"Push to git using VS Code - Daniel"
+"Push to git using VS Code - Daniel Streater"
