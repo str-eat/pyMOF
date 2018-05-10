@@ -6,7 +6,7 @@ class Experiment():
     def __init__(self):
         
         _experiment_types = ['synthesis', 'samplepreparation', 'analysis']
-        
+
         self.date = datetime.date.today()
         self.type = remove_spaces(input("What type of experiment are you performing? (Synthesis, Sample Preparation, Analysis)").casefold())
         
@@ -35,5 +35,4 @@ def remove_spaces(string):
         new_string = new_string + char
     return new_string
 
-test = Experiment()
 
