@@ -54,16 +54,15 @@ class Notebook(tk.Frame):
         self.experimentObjective.pack(after=self.objectiveLabel)
         
         def submit():
-            new_experiment = experiment(self.experimentName, self.experimentType, self.experimentObjective)
+            new_experiment = experiment(self.experimentName.get(), self.experimentType.get(),\
+            self.experimentObjective.get("1.0", 'end-1c'))
             print("new experiment created")
             print(new_experiment)
-            self.empty_window()
-            self.experiment_details()
+            self.experiment_details(experiment=new_experiment)
         
         self.submitExperiment = tk.Button(self, text='Submit', command=submit)
         self.submitExperiment.pack(side='bottom')
 
-    
     def existing_experiment(self):
         self.empty_window()
         experimentNameChoices = experiment.get_experiment_names()
@@ -71,11 +70,20 @@ class Notebook(tk.Frame):
         # next screen
         print("Select which experiment you'd like to edit")
 
-    def experiment_details(self):
-        return
+    def experiment_details(self, experiment=None):
+        self.empty_window()
+        self.__init__(master=root)
+        
+        def save():
+            with open('data/experiments.csv', 'r+') as f:
+                f.write(experiment.experimentName + ',' + '\n')
+                print('experiment saved')
+
+        self.saveExperiment = tk.Button(self, text="Save", command=save)
+        self.saveExperiment.pack(side='top')
 
     def empty_window(self):
-        self.pack_forget()
+        self.destroy()
     
     def close_window(self):
         root.destroy()
