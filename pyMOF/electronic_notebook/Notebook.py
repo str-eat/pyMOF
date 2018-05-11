@@ -1,6 +1,8 @@
 import tkinter as tk
 import sys
 import os
+import pickle
+import csv
 try:
     dir_path = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(dir_path)
@@ -54,16 +56,15 @@ class Notebook(tk.Frame):
         self.experimentObjective.pack(after=self.objectiveLabel)
         
         def submit():
-            new_experiment = experiment(self.experimentName, self.experimentType, self.experimentObjective)
+            new_experiment = experiment(self.experimentName.get(), self.experimentType.get(),\
+            self.experimentObjective.get("1.0", 'end-1c'))
             print("new experiment created")
             print(new_experiment)
-            self.empty_window()
-            self.experiment_details()
+            self.experiment_details(experiment=new_experiment)
         
         self.submitExperiment = tk.Button(self, text='Submit', command=submit)
         self.submitExperiment.pack(side='bottom')
 
-    
     def existing_experiment(self):
         self.empty_window()
         experimentNameChoices = experiment.get_experiment_names()
@@ -71,11 +72,33 @@ class Notebook(tk.Frame):
         # next screen
         print("Select which experiment you'd like to edit")
 
-    def experiment_details(self):
-        return
+    def experiment_details(self, experiment=None):
+        self.empty_window()
+        self.__init__(master=root)
+        
+        def save():
+            with open('data/experiments.csv', 'r+', newline='')  as myFile:  
+                reader = csv.reader(myFile)
+                exists = False
+                for row in reader:
+                    if experiment.experimentName in row:
+                        exists = True
+                        break                  
+                    elif experiment.experimentName not in row:
+                        continue
+                if not exists:
+                    data = [experiment.experimentName, experiment.experimentType, experiment.experimentObjective]
+                    writer = csv.writer(myFile)
+                    writer.writerow(data)
+                    print("Saved")
+                else:
+                    print("Not saved")
+                        
+        self.saveExperiment = tk.Button(self, text="Save", command=save)
+        self.saveExperiment.pack(side='top')
 
     def empty_window(self):
-        self.pack_forget()
+        self.destroy()
     
     def close_window(self):
         root.destroy()
