@@ -1,6 +1,8 @@
 import tkinter as tk
 import sys
 import os
+import pickle
+import csv
 try:
     dir_path = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(dir_path)
@@ -75,10 +77,23 @@ class Notebook(tk.Frame):
         self.__init__(master=root)
         
         def save():
-            with open('data/experiments.csv', 'r+') as f:
-                f.write(experiment.experimentName + ',' + '\n')
-                print('experiment saved')
-
+            with open('data/experiments.csv', 'r+', newline='')  as myFile:  
+                reader = csv.reader(myFile)
+                exists = False
+                for row in reader:
+                    if experiment.experimentName in row:
+                        exists = True
+                        break                  
+                    elif experiment.experimentName not in row:
+                        continue
+                if not exists:
+                    data = [experiment.experimentName, experiment.experimentType, experiment.experimentObjective]
+                    writer = csv.writer(myFile)
+                    writer.writerow(data)
+                    print("Saved")
+                else:
+                    print("Not saved")
+                        
         self.saveExperiment = tk.Button(self, text="Save", command=save)
         self.saveExperiment.pack(side='top')
 
